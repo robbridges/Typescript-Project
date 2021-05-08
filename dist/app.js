@@ -44,6 +44,26 @@ const autoBind = (_, _2, descriptor) => {
     };
     return adjDescriptor;
 };
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.templateElement = document.getElementById('project-list');
+        this.hostElement = document.getElementById('app');
+        const node = document.importNode(this.templateElement.content, true);
+        this.element = node.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        this.attachNode();
+        this.renderContent();
+    }
+    renderContent() {
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul').id = listId;
+        this.element.querySelector('h2').textContent = this.type.toUpperCase() + 'Projects';
+    }
+    attachNode() {
+        this.hostElement.insertAdjacentElement('beforeend', this.element);
+    }
+}
 class ProjectInput {
     constructor() {
         this.templateElement = document.getElementById('project-input');
@@ -80,7 +100,6 @@ class ProjectInput {
             !validateObject(descriptionValidate) ||
             !validateObject(numberOfPeopleValidate)) {
             alert('Invalid input, please enter a value for all 3 areas');
-            console.log(validateObject(titleValidate), validateObject(descriptionValidate));
             return;
         }
         else {
@@ -112,4 +131,6 @@ __decorate([
     autoBind
 ], ProjectInput.prototype, "submitHandler", null);
 const projectInput = new ProjectInput();
+const activeProjectList = new ProjectList('active');
+const finishedProjectList = new ProjectList('finished');
 //# sourceMappingURL=app.js.map
