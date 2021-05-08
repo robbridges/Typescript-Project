@@ -40,11 +40,21 @@ class ProjectInput {
     this.configure();
     this.attachNode();
   }
+  // type script tuple that first 2 elements are string, third is number;
+  private gatherInput(): [string, string, number] {
+    const enteredTitle = this.titleInput.value;
+    const enteredDescription = this.descriptionInput.value;
+    const numberOfPeople = this.peopleInputElement.value;
+    //this is a terrible way to validate this, it doesnt scale and doesn't really do checks besides if the value is null, but it will work to make sure that it validates until a better solution is made.
+    if (enteredTitle.trim(). length === 0 || enteredDescription.trim().length === 0 || numberOfPeople.trim().length === 0) {
+
+    }
+  }
 
   @autoBind
   private submitHandler(event: Event) {
     event.preventDefault();
-    console.log(this.titleInput.value);
+    const userInput = this.gatherInput();
   }
 
   private configure() {
