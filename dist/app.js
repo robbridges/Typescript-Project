@@ -29,9 +29,31 @@ class ProjectInput {
         this.configure();
         this.attachNode();
     }
+    gatherInput() {
+        const enteredTitle = this.titleInput.value;
+        const enteredDescription = this.descriptionInput.value;
+        const numberOfPeople = this.peopleInputElement.value;
+        if (enteredTitle.trim().length === 0 || enteredDescription.trim().length === 0 || numberOfPeople.trim().length === 0) {
+            alert('Invalud input, please enter a value for all 3 areas');
+            return;
+        }
+        else {
+            return [enteredTitle, enteredDescription, parseInt(numberOfPeople)];
+        }
+    }
+    clearInput() {
+        this.titleInput.value = '';
+        this.descriptionInput.value = '';
+        this.peopleInputElement.value = '';
+    }
     submitHandler(event) {
         event.preventDefault();
-        console.log(this.titleInput.value);
+        const userInput = this.gatherInput();
+        if (Array.isArray(userInput)) {
+            const [title, desc, people] = userInput;
+            console.log(title, desc, people);
+            this.clearInput();
+        }
     }
     configure() {
         this.element.addEventListener('submit', this.submitHandler);

@@ -40,21 +40,40 @@ class ProjectInput {
     this.configure();
     this.attachNode();
   }
+
+  
   // type script tuple that first 2 elements are string, third is number;
-  private gatherInput(): [string, string, number] {
+  private gatherInput(): [string, string, number] | void {
     const enteredTitle = this.titleInput.value;
     const enteredDescription = this.descriptionInput.value;
     const numberOfPeople = this.peopleInputElement.value;
     //this is a terrible way to validate this, it doesnt scale and doesn't really do checks besides if the value is null, but it will work to make sure that it validates until a better solution is made.
     if (enteredTitle.trim(). length === 0 || enteredDescription.trim().length === 0 || numberOfPeople.trim().length === 0) {
-
+      alert('Invalud input, please enter a value for all 3 areas');
+      return;
+    } else {
+      return [enteredTitle, enteredDescription, parseInt(numberOfPeople)];
     }
   }
+
+  private clearInput() {
+    this.titleInput.value = '';
+    this.descriptionInput.value = '';
+    this.peopleInputElement.value = '';
+  }
+
 
   @autoBind
   private submitHandler(event: Event) {
     event.preventDefault();
     const userInput = this.gatherInput();
+    if (Array.isArray(userInput)) {
+      const [title, desc, people] = userInput;
+      console.log(title, desc, people);
+      this.clearInput();
+    }
+    
+
   }
 
   private configure() {
