@@ -25,18 +25,25 @@ function validateObject(validatableInput: Validate) {
   let isValid = true;
   if (validatableInput.required) {
     isValid = isValid && validatableInput.value.toString().trim.length !== 0;
+    console.log(`required passed`)
   }
   if (validatableInput.minLength != null && typeof validatableInput.value ==='string') {
-    isValid = isValid && validatableInput.value.length > validatableInput.minLength;
-  }
+    console.log(validatableInput.value)
+    isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
+    console.log(`min length test passed`);
+    
+  } 
   if (validatableInput.maxLength != null && typeof validatableInput.value ==='string') {
-    isValid = isValid && validatableInput.value.length < validatableInput.maxLength;
+    isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
+    console.log(`max length passed`);
   }
   if (validatableInput.min != null  && typeof validatableInput.value === 'number') {
-    isValid = isValid && validatableInput.value > validatableInput.min;
+    isValid = isValid && validatableInput.value >= validatableInput.min;
+    console.log(`min number passed`)
   }
   if (validatableInput.max != null && typeof validatableInput.value ==='number') {
-    isValid = isValid && validatableInput.value < validatableInput.max;
+    isValid = isValid && validatableInput.value <= validatableInput.max;
+    console.log('max number passed')
   }
   return isValid;
 }
@@ -77,9 +84,30 @@ class ProjectInput {
     const enteredTitle = this.titleInput.value;
     const enteredDescription = this.descriptionInput.value;
     const numberOfPeople = this.peopleInputElement.value;
+
+    const titleValidate: Validate = {
+      value: enteredTitle,
+      required: true,
+    }
+    const descriptionValidate: Validate ={
+      value: enteredDescription,
+      required: true,
+      minLength: 5,
+    }
+    const numberOfPeopleValidate: Validate = {
+      value: parseInt(numberOfPeople),
+      required: true,
+      min: 1,
+      max: 5,
+    }
+
     //this is a terrible way to validate this, it doesnt scale and doesn't really do checks besides if the value is null, but it will work to make sure that it validates until a better solution is made.
-    if (enteredTitle.trim(). length === 0 || enteredDescription.trim().length === 0 || numberOfPeople.trim().length === 0) {
-      alert('Invalud input, please enter a value for all 3 areas');
+    if (
+      !validateObject(titleValidate) ||
+      !validateObject(descriptionValidate) ||
+      !validateObject(numberOfPeopleValidate)
+      ) {
+      alert('Invalid input, please enter a value for all 3 areas');
       return;
     } else {
       return [enteredTitle, enteredDescription, parseInt(numberOfPeople)];
