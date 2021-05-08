@@ -5,6 +5,34 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+const validateObject = (validatableInput) => {
+    let isValid = true;
+    if (validatableInput.required) {
+        isValid = isValid && validatableInput.value.toString().trim().length !== 0;
+        console.log(`required passed`);
+    }
+    if (validatableInput.minLength != null &&
+        typeof validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
+        console.log(`min length test passed`);
+    }
+    if (validatableInput.maxLength != null &&
+        typeof validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
+        console.log(`max length passed`);
+    }
+    if (validatableInput.min != null &&
+        typeof validatableInput.value === 'number') {
+        isValid = isValid && validatableInput.value >= validatableInput.min;
+        console.log(`min number passed`);
+    }
+    if (validatableInput.max != null &&
+        typeof validatableInput.value === 'number') {
+        isValid = isValid && validatableInput.value <= validatableInput.max;
+        console.log('max number passed');
+    }
+    return isValid;
+};
 const autoBind = (_, _2, descriptor) => {
     const orgionalMethod = descriptor.value;
     const adjDescriptor = {
@@ -16,31 +44,6 @@ const autoBind = (_, _2, descriptor) => {
     };
     return adjDescriptor;
 };
-function validateObject(validatableInput) {
-    let isValid = true;
-    if (validatableInput.required) {
-        isValid = isValid && validatableInput.value.toString().trim.length !== 0;
-        console.log(`required passed`);
-    }
-    if (validatableInput.minLength != null && typeof validatableInput.value === 'string') {
-        console.log(validatableInput.value);
-        isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
-        console.log(`min length test passed`);
-    }
-    if (validatableInput.maxLength != null && typeof validatableInput.value === 'string') {
-        isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
-        console.log(`max length passed`);
-    }
-    if (validatableInput.min != null && typeof validatableInput.value === 'number') {
-        isValid = isValid && validatableInput.value >= validatableInput.min;
-        console.log(`min number passed`);
-    }
-    if (validatableInput.max != null && typeof validatableInput.value === 'number') {
-        isValid = isValid && validatableInput.value <= validatableInput.max;
-        console.log('max number passed');
-    }
-    return isValid;
-}
 class ProjectInput {
     constructor() {
         this.templateElement = document.getElementById('project-input');
@@ -77,6 +80,7 @@ class ProjectInput {
             !validateObject(descriptionValidate) ||
             !validateObject(numberOfPeopleValidate)) {
             alert('Invalid input, please enter a value for all 3 areas');
+            console.log(validateObject(titleValidate), validateObject(descriptionValidate));
             return;
         }
         else {

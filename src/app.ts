@@ -1,3 +1,55 @@
+//validation logic 
+interface Validate {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+const validateObject = (validatableInput: Validate) => {
+  let isValid = true;
+  if (validatableInput.required) {
+    isValid = isValid && validatableInput.value.toString().trim().length !== 0;
+    console.log(`required passed`)
+  }
+  if (
+    validatableInput.minLength != null && 
+    typeof validatableInput.value ==='string'
+    ) {
+    
+    isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
+    console.log(`min length test passed`);
+    
+  } 
+  if (
+    validatableInput.maxLength != null && 
+    typeof validatableInput.value ==='string'
+    ) {
+    isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
+    console.log(`max length passed`);
+  }
+  if (
+    validatableInput.min != null  && 
+    typeof validatableInput.value === 'number'
+    ) {
+    isValid = isValid && validatableInput.value >= validatableInput.min;
+    console.log(`min number passed`)
+  }
+  if (
+    validatableInput.max != null &&
+     typeof validatableInput.value ==='number'
+     ) {
+    isValid = isValid && validatableInput.value <= validatableInput.max;
+    console.log('max number passed')
+  }
+  return isValid;
+}
+
+
+
+
 //autobind decorator
 const autoBind = (_: any, _2: string, descriptor: PropertyDescriptor) => {
   const orgionalMethod = descriptor.value;
@@ -11,42 +63,8 @@ const autoBind = (_: any, _2: string, descriptor: PropertyDescriptor) => {
   return adjDescriptor;
 }
 
-//validation logic 
-interface Validate {
-  value: string | number;
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  min?: number;
-  max?: number;
-}
 
-function validateObject(validatableInput: Validate) {
-  let isValid = true;
-  if (validatableInput.required) {
-    isValid = isValid && validatableInput.value.toString().trim.length !== 0;
-    console.log(`required passed`)
-  }
-  if (validatableInput.minLength != null && typeof validatableInput.value ==='string') {
-    console.log(validatableInput.value)
-    isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
-    console.log(`min length test passed`);
-    
-  } 
-  if (validatableInput.maxLength != null && typeof validatableInput.value ==='string') {
-    isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
-    console.log(`max length passed`);
-  }
-  if (validatableInput.min != null  && typeof validatableInput.value === 'number') {
-    isValid = isValid && validatableInput.value >= validatableInput.min;
-    console.log(`min number passed`)
-  }
-  if (validatableInput.max != null && typeof validatableInput.value ==='number') {
-    isValid = isValid && validatableInput.value <= validatableInput.max;
-    console.log('max number passed')
-  }
-  return isValid;
-}
+
 
 
 
@@ -75,7 +93,7 @@ class ProjectInput {
     this.peopleInputElement = this.element.querySelector('#people') as HTMLInputElement;
 
     this.configure();
-    this.attachNode();
+    this.attachNode()
   }
 
   
@@ -101,13 +119,14 @@ class ProjectInput {
       max: 5,
     }
 
-    //this is a terrible way to validate this, it doesnt scale and doesn't really do checks besides if the value is null, but it will work to make sure that it validates until a better solution is made.
+    // validator not working always returns false even if requirements should be met
     if (
       !validateObject(titleValidate) ||
       !validateObject(descriptionValidate) ||
       !validateObject(numberOfPeopleValidate)
       ) {
       alert('Invalid input, please enter a value for all 3 areas');
+      console.log(validateObject(titleValidate), validateObject(descriptionValidate),)
       return;
     } else {
       return [enteredTitle, enteredDescription, parseInt(numberOfPeople)];
