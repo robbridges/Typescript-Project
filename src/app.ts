@@ -1,4 +1,12 @@
+// drag and drop interfaces 
+interface Draggable {}
+
+interface DragTarget {}
+
+
 //Project type 
+
+
 enum ProjectStatus { Active, Finished}
 
 class Project {
