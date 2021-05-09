@@ -12,12 +12,10 @@ class Project {
 }
 
 // Project state management class
-type Listener = () => {
-  
-};
+type Listener = (items: Project[]) => void;
 
 class ProjectState {
-  private listeners: any[] = [];
+  private listeners: Listener[] = [];
   private projects: Project[] = [];
   private static instance: ProjectState;
 
