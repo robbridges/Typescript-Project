@@ -1,12 +1,12 @@
 // drag and drop interfaces 
 interface Draggable {
   dragStartHandler(event: DragEvent): void;
-  dragEndHanlder(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
 }
 
 interface DragTarget {
   dragOverHandler(event: DragEvent): void;
-  dropHander(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
   dragLeaveHandler(event: DragEvent): void;
 }
 
@@ -71,7 +71,13 @@ class ProjectState extends State<Project> {
       listenerFuction(this.projects.slice());
     }
   }
+
+  moveProject() {
+    
+  }
 }
+
+
 
 const projectState = ProjectState.getInstance();
 
@@ -197,18 +203,19 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 
   @autoBind
   dragStartHandler(event: DragEvent) {
-    console.log(event);
+    event.dataTransfer!.setData('text/plain', this.project.id);
+    event.dataTransfer!.effectAllowed = 'move';
   }
 
   @autoBind
-  dragEndHanlder(_: DragEvent) {
+  dragEndHandler(_: DragEvent) {
     console.log('Drag has ended');
   }
 
 
   configure() {
     this.element.addEventListener('dragstart', this.dragStartHandler);
-    this.element.addEventListener('dragend', this.dragEndHanlder);
+    this.element.addEventListener('dragend', this.dragEndHandler);
   }
 
   renderContent() {
@@ -242,17 +249,24 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
   }
 
   @autoBind
-  dragOverHandler(_: DragEvent) {
-    const listEl = this.element.querySelector('ul')!;
-    listEl.classList.add('droppable');
+  dragOverHandler(event: DragEvent) {
+    if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+      event.preventDefault();
+      const listEl = this.element.querySelector('ul')!;
+      listEl.classList.add('droppable');
+    }
   }
 
-  dropHander(_: DragEvent) {
+  @autoBind
+   dropHandler(event: DragEvent) {
+    event.preventDefault();
+    const projectId = event.dataTransfer!.getData('text/plain');
 
   }
 
   @autoBind
-  dragLeaveHandler(_: DragEvent) {
+  dragLeaveHandler(event: DragEvent) {
+    event.preventDefault();
     const listEl = this.element.querySelector('ul')!;
     listEl.classList.remove('droppable');
   }
@@ -261,7 +275,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
 
     this.element.addEventListener('dragover', this.dragOverHandler);
     this.element.addEventListener('dragleave', this.dragLeaveHandler);
-    this.element.addEventListener('drop', this.dragOverHandler);
+    this.element.addEventListener('drop', this.dropHandler);
 
 
     projectState.addListener((projects: Project[]) => {
