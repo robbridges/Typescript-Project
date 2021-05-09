@@ -19,9 +19,17 @@ class Project {
         this.status = status;
     }
 }
-class ProjectState {
+class State {
     constructor() {
         this.listeners = [];
+    }
+    addListener(listenerFuction) {
+        this.listeners.push(listenerFuction);
+    }
+}
+class ProjectState extends State {
+    constructor() {
+        super();
         this.projects = [];
     }
     static getInstance() {
@@ -30,9 +38,6 @@ class ProjectState {
         }
         this.instance = new ProjectState();
         return this.instance;
-    }
-    addListener(listenerFuction) {
-        this.listeners.push(listenerFuction);
     }
     addProject(title, description, numOfPeople) {
         const newProject = new Project(Math.random().toString(), title, description, numOfPeople, ProjectStatus.Active);
@@ -132,18 +137,13 @@ class ProjectList extends Component {
         this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' Projects';
     }
 }
-class ProjectInput {
+class ProjectInput extends Component {
     constructor() {
-        this.templateElement = document.getElementById('project-input');
-        this.hostElement = document.getElementById('app');
-        const node = document.importNode(this.templateElement.content, true);
-        this.element = node.firstElementChild;
-        this.element.id = 'user-input';
+        super('project-input', 'app', true, 'user-input');
         this.titleInput = this.element.querySelector('#title');
         this.descriptionInput = this.element.querySelector('#description');
         this.peopleInputElement = this.element.querySelector('#people');
         this.configure();
-        this.attachNode();
     }
     gatherInput() {
         const enteredTitle = this.titleInput.value;
@@ -189,11 +189,12 @@ class ProjectInput {
         }
     }
     configure() {
+        this.titleInput = this.element.querySelector('#title');
+        this.descriptionInput = this.element.querySelector('#description');
+        this.peopleInputElement = this.element.querySelector('#people');
         this.element.addEventListener('submit', this.submitHandler);
     }
-    attachNode() {
-        this.hostElement.insertAdjacentElement('afterbegin', this.element);
-    }
+    renderContent() { }
 }
 __decorate([
     autoBind
