@@ -241,19 +241,29 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
     }
   }
 
-  dragOverHandler(event: DragEvent) {
+  @autoBind
+  dragOverHandler(_: DragEvent) {
+    const listEl = this.element.querySelector('ul')!;
+    listEl.classList.add('droppable');
+  }
+
+  dropHander(_: DragEvent) {
 
   }
 
-  dropHander(event: DragEvent) {
-    
-  }
-
-  dragLeaveHandler(event: DragEvent) {
-
+  @autoBind
+  dragLeaveHandler(_: DragEvent) {
+    const listEl = this.element.querySelector('ul')!;
+    listEl.classList.remove('droppable');
   }
 
   configure() {
+
+    this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('dragleave', this.dragLeaveHandler);
+    this.element.addEventListener('drop', this.dragOverHandler);
+
+
     projectState.addListener((projects: Project[]) => {
     const relevantProjects = projects.filter(project => {
       if (this.type === 'active') {
