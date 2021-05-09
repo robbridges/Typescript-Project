@@ -32,7 +32,7 @@ class ProjectState {
     return this.instance;
   }
 
-  addListener(listenerFuction: Function) {
+  addListener(listenerFuction: Listener) {
     this.listeners.push(listenerFuction);
   }
 
@@ -140,10 +140,19 @@ class ProjectList {
     this.element = node.firstElementChild as HTMLElement;
     this.element.id = `${this.type}-projects`;
 
-    projectState.addListener((projects: any[]) => {
-      this.assignedProjects = projects;
+    projectState.addListener((projects: Project[]) => {
+      const relevantProjects = projects.filter(project => {
+        if (this.type === 'active') {
+          return project.status === ProjectStatus.Active;
+        }
+        return project.status === ProjectStatus.Finished;
+      });
+
+
+      this.assignedProjects = relevantProjects;
       this.renderProjects();
     });
+
     this.attachNode();
     this.renderContent();
   }
