@@ -1,7 +1,14 @@
 // drag and drop interfaces 
-interface Draggable {}
+interface Draggable {
+  dragStartHandler(event: DragEvent): void;
+  dragEndHanlder(event: DragEvent): void;
+}
 
-interface DragTarget {}
+interface DragTarget {
+  dragOverHandler(event: DragEvent): void;
+  dropHander(event: DragEvent): void;
+  dragLeaveHandler(event: DragEvent): void;
+}
 
 
 //Project type 
@@ -169,7 +176,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 
 // projectItem class
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements Draggable {
   private project: Project;
 
   get persons() {
@@ -188,7 +195,21 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     this.renderContent();
   }
 
-  configure() {}
+  @autoBind
+  dragStartHandler(event: DragEvent) {
+    console.log(event);
+  }
+
+  @autoBind
+  dragEndHanlder(_: DragEvent) {
+    console.log('Drag has ended');
+  }
+
+
+  configure() {
+    this.element.addEventListener('dragstart', this.dragStartHandler);
+    this.element.addEventListener('dragend', this.dragEndHanlder);
+  }
 
   renderContent() {
     this.element.querySelector('h2')!.textContent = this.project.title;
@@ -200,7 +221,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
 
 // ProjectList class
 
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget {
 
   assignedProjects: Project[];
 
@@ -220,6 +241,18 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     }
   }
 
+  dragOverHandler(event: DragEvent) {
+
+  }
+
+  dropHander(event: DragEvent) {
+    
+  }
+
+  dragLeaveHandler(event: DragEvent) {
+
+  }
+
   configure() {
     projectState.addListener((projects: Project[]) => {
     const relevantProjects = projects.filter(project => {
@@ -232,7 +265,8 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
 
     this.assignedProjects = relevantProjects;
     this.renderProjects();
-  });}
+    });
+  }
 
   renderContent() {
     const listId = `${this.type}-projects-list`;
