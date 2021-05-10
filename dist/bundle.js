@@ -302,7 +302,11 @@ var App;
     __decorate([
         App.autoBind
     ], ProjectInput.prototype, "submitHandler", null);
-    new ProjectInput();
+    App.ProjectInput = ProjectInput;
+})(App || (App = {}));
+var App;
+(function (App) {
+    new App.ProjectInput();
     new App.ProjectList('active');
     new App.ProjectList('finished');
 })(App || (App = {}));
